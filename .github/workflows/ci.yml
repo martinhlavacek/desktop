@@ -46,6 +46,13 @@ jobs:
           yarn lint
           yarn validate-changelog
           git diff --submodule=diff
+          git diff
+          cd app/static/common/gitignore
+          echo "--- checking in submodule"
+          git status
+          git diff
+          git diff --submodule=diff
+          cd -
           yarn check-modified
       - name: Build production app
         run: yarn build:prod
