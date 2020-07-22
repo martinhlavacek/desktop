@@ -45,6 +45,7 @@ jobs:
         run: |
           yarn lint
           yarn validate-changelog
+          git diff
           yarn check-modified
       - name: Build production app
         run: yarn build:prod
