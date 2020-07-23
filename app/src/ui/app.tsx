@@ -51,6 +51,7 @@ import {
   PushPullButton,
   BranchDropdown,
   RevertProgress,
+  NxButton
 } from './toolbar'
 import { OcticonSymbol, iconForRepository } from './octicons'
 import { showCertificateTrustDialog, sendReady } from './main-process-proxy'
@@ -2345,6 +2346,56 @@ export class App extends React.Component<IAppProps, IAppState> {
     )
   }
 
+  private renderNxToolbarButton() {
+    const selection = this.state.selectedState
+    if (!selection || selection.type !== SelectionType.Repository) {
+      return null
+    }
+
+    const state = selection.state
+    const revertProgress = state.revertProgress
+    if (revertProgress) {
+      return <RevertProgress progress={revertProgress} />
+    }
+
+    let remoteName = state.remote ? state.remote.name : null
+    const progress = state.pushPullFetchProgress
+
+    const { conflictState } = state.changesState
+
+    const rebaseInProgress =
+      conflictState !== null && conflictState.kind === 'rebase'
+
+    const { aheadBehind, branchesState } = state
+    const { pullWithRebase, tip } = branchesState
+
+    if (tip.kind === TipState.Valid && tip.branch.remote !== null) {
+      remoteName = tip.branch.remote
+    }
+
+    const isForcePush = isCurrentBranchForcePush(branchesState, aheadBehind)
+
+    return (
+      <NxButton
+        dispatcher={this.props.dispatcher}
+        repository={selection.repository}
+        aheadBehind={state.aheadBehind}
+        numTagsToPush={state.tagsToPush !== null ? state.tagsToPush.length : 0}
+        remoteName={remoteName}
+        lastFetched={state.lastFetched}
+        networkActionInProgress={state.isPushPullFetchInProgress}
+        progress={progress}
+        tipState={tip.kind}
+        pullWithRebase={pullWithRebase}
+        rebaseInProgress={rebaseInProgress}
+        isForcePush={isForcePush}
+        shouldNudge={
+          this.state.currentOnboardingTutorialStep === TutorialStep.PushBranch
+        }
+      />
+    )
+  }
+
   private renderPushPullToolbarButton() {
     const selection = this.state.selectedState
     if (!selection || selection.type !== SelectionType.Repository) {
@@ -2560,6 +2611,7 @@ export class App extends React.Component<IAppProps, IAppState> {
         </div>
         {this.renderBranchToolbarButton()}
         {this.renderPushPullToolbarButton()}
+        {this.renderNxToolbarButton()}
       </Toolbar>
     )
   }

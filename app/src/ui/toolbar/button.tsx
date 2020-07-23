@@ -98,6 +98,7 @@ export interface IToolbarButtonProps {
 
   readonly role?: string
   readonly ariaExpanded?: boolean
+  readonly image?: string
 }
 
 /**
@@ -162,6 +163,11 @@ export class ToolbarButton extends React.Component<IToolbarButtonProps, {}> {
         />
       ) : undefined
 
+    const image = this.props.image ? (
+      <img src={this.props.image} className="nx-button" />
+    ): undefined
+        console.log('image', image)
+
     return (
       <div
         className={className}
@@ -179,6 +185,7 @@ export class ToolbarButton extends React.Component<IToolbarButtonProps, {}> {
         >
           {progress}
           {icon}
+          {image}
           {this.renderText()}
           {this.props.children}
         </Button>
