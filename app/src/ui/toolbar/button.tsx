@@ -166,7 +166,7 @@ export class ToolbarButton extends React.Component<IToolbarButtonProps, {}> {
     const image = this.props.image ? (
       <img src={this.props.image} className="nx-button" />
     ): undefined
-        console.log('image', image)
+      
 
     return (
       <div
